@@ -3,7 +3,7 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'ctf-citadel.github.io',
+	site: 'https://ctf-citadel.github.io',
 	base: '/docs',
 	integrations: [
 		starlight({
