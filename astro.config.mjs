@@ -14,13 +14,19 @@ export default defineConfig({
 				{
 					label: 'Guides',
 					items: [
-						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', link: '/guides/example/' },
+						{ label: 'Quick Start', link: '/guides/quickstart' },
+						{ label: 'Installation', link: '/guides/install' },
+						{ label: 'Event Creation', link: '/guides/create-events' },
+						{ label: 'Challenge Creation', link: '/guides/create-challenges' },
 					],
 				},
 				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
+					label: 'Documentation',
+					items: [
+						{ label: 'Platform', link: '/doc/webapp' },
+						{ label: 'Anti-Cheat', link: '/doc/anticheat' },
+						{ label: 'Challenges', link: '/doc/challenges' },
+					],
 				},
 			],
 		}),

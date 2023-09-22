@@ -1,6 +1,6 @@
 ---
-title: WebApp Reference
-description: Reference for WebApp
+title: Challenges
+description: Documentation for Challenges
 ---
 
 Reference pages are ideal for outlining how things work in terse and clear terms.

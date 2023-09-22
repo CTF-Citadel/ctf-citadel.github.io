@@ -1,6 +1,6 @@
 ---
-title: Anti-Cheat Reference
-description: Reference for Anti-Cheat
+title: Platform
+description: Documentation for the WebApp
 ---
 
 Reference pages are ideal for outlining how things work in terse and clear terms.

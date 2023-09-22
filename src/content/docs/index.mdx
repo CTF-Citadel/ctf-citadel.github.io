@@ -1,28 +1,36 @@
 ---
 title: Welcome to CTF Citadel
-description: CTF Documentation
+description: CTF done right.
 template: splash
 hero:
-  tagline: Where Challenges get solved!
+  tagline: CTF done right.
   image:
     file: ../../assets/splash.webp
+  actions:
+    - text: Get Started
+      link: /guides/quickstart
+      icon: right-arrow
+      variant: primary
+    - text: GitHub
+      link: https://github.com/CTF-Citadel/
+      icon: external
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## Features
 
 <CardGrid stagger>
-	<Card title="WebApp" icon="open-book">
-		[Documentation for the WebApp](guides/webapp/)
-	</Card>
-  <Card title="Challenges" icon="open-book">
-		[Documentation for the Challenges](guides/challenges/)
-	</Card>
-  <Card title="Anti-Cheat" icon="open-book">
-		[Documentation for the Anti-Cheat](guides/anticheat/)
-	</Card>
-  <Card title="About" icon="setting">
-		[About the Project](guides/about/)
-	</Card>
+    <Card title="Anti-Cheat" icon="error">
+        Combats Flag Sharing automatically!
+    </Card>
+    <Card title="Dynamic Flags" icon="puzzle">
+        Another Step towards hindering Flag Sharing!
+    </Card>
+    <Card title="Admin Panel" icon="setting">
+        Manage everything from a centralized Admin Panel!
+    </Card>
+    <Card title="More" icon="rocket">
+        Many more Quality of Life features!
+    </Card>
 </CardGrid>

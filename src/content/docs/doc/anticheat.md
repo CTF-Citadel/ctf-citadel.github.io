@@ -1,6 +1,6 @@
 ---
-title: Challenge Reference
-description: Reference for Challenges
+title: Anti-Cheat
+description: Reference for Anti-Cheat
 ---
 
 Reference pages are ideal for outlining how things work in terse and clear terms.
