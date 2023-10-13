@@ -1,6 +1,5 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import { Icon } from '@astrojs/starlight/components';
 
 // https://astro.build/config
 export default defineConfig({
