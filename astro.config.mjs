@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { Icon } from '@astrojs/starlight/components';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,6 +12,9 @@ export default defineConfig({
 				github: 'https://github.com/CTF-Citadel',
 			},
 			sidebar: [
+				{
+					label: 'Introduction', link: '/introduction'
+				},
 				{
 					label: 'Guides',
 					items: [
