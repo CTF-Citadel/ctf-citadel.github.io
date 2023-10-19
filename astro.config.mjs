@@ -18,7 +18,6 @@ export default defineConfig({
 					label: 'Guides',
 					items: [
 						{ label: 'Quick Start', link: '/guides/quickstart' },
-						{ label: 'Installation', link: '/guides/install' },
 						{ label: 'Event Creation', link: '/guides/create-events' },
 						{ label: 'Challenge Creation', link: '/guides/create-challenges' },
 					],
