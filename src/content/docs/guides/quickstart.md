@@ -123,3 +123,7 @@ This will start (and build) all containers and if you go to `https://localhost:4
 ## Deploying Barebones ##
 
 > ***Coming Soon...***
+
+___
+
+Authors: Birnbacher Maximilian

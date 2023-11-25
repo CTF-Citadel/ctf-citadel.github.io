@@ -17,3 +17,7 @@ We settled on modern technologies and frameworks to build CTF-Citadel from the g
 - [Svelte.js](https://svelte.dev/): the *better React* as we like to call it, compiles to vanilla JavaScript and is extremely efficient, compact and fast.
 - [TailwindCSS](https://tailwindcss.com/): CSS done right.
 - [Lucia Auth](https://lucia-auth.com/): a simple and clean Authentication System that is written completely in TypeScript and works wondefully alongside Frameworks like Astro and Svelte.
+
+___
+
+Authors: Birnbacher Maximilian
