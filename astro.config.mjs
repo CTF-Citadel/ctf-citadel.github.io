@@ -29,7 +29,7 @@ export default defineConfig({
 						{ label: 'Anti-Cheat', link: '/doc/anticheat' },
 						{ label: 'Challenges', link: '/doc/challenges' },
 						{ label: 'Teams', link: '/doc/teams' },
-						{ label: 'Leaderboard', link: '/doc/scoreboard' },
+						{ label: 'Leaderboard', link: '/doc/leaderboard' },
 					],
 				},
 			],
