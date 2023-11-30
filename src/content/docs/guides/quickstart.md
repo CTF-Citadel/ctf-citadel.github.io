@@ -126,4 +126,4 @@ This will start (and build) all containers and if you go to `https://localhost:4
 
 ___
 
-Authors: Birnbacher Maximilian
+Authors: Fabian T.
