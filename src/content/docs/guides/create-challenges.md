@@ -39,7 +39,7 @@ ___
 This file may contain further arguments to setup a certain docker-container. Can be named differently, but keep Dockerfile in the name.
 
 Example:
-```DOCKERFILE
+```docker
 FROM php:8-fpm
 
 ...
@@ -96,7 +96,7 @@ ___
 This file contains all information which is being displayed on the webapp such as `title`, `description`, `hints` in order and `difficulty` which corresponds to the points the challenge gives.
 
 Example:
-```conf
+```toml
 [Challenge]
 id = 001
 title = "Ouch, my brain"
