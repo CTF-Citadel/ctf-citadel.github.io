@@ -24,3 +24,6 @@ Once the files are copied, we start the container build process using the parame
 After the finished build the middleware returns the UUID, the challenge and the environment variables.
 These values are then used by the webapp.
 
+___
+
+Authors: Felix Slama
