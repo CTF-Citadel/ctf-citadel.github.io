@@ -26,6 +26,7 @@ export default defineConfig({
 					label: 'Documentation',
 					items: [
 						{ label: 'Platform', link: '/doc/webapp' },
+						{ label: 'Infrastructure', link: '/doc/infra'},
 						{ label: 'Anti-Cheat', link: '/doc/anticheat' },
 						{ label: 'Challenges', link: '/doc/challenges' },
 						{ label: 'Teams', link: '/doc/teams' },
