@@ -1,5 +1,5 @@
 ---
-title: Infra-Beckend
+title: Infra-Backend
 description: Documentation for the Infra-Backend
 ---
 The Infra-Middleware is used to control the entire lifecycle of the challenge container instances.
