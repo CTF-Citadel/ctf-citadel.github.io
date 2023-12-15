@@ -31,6 +31,7 @@ export default defineConfig({
 						{ label: 'Challenges', link: '/doc/challenges' },
 						{ label: 'Teams', link: '/doc/teams' },
 						{ label: 'Leaderboard', link: '/doc/leaderboard' },
+						{ label: 'Event', link: '/doc/event' },
 					],
 				},
 			],

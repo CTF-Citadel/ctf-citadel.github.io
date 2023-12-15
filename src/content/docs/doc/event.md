@@ -57,6 +57,6 @@ TODO
 6. Don't hinder other participants from solving challenges.
 7. Don't blackmail the organizers.
 
+___
 
-
-
+Authors: Birnbacher Maximilian
