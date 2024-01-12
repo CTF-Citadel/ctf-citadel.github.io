@@ -17,4 +17,4 @@ Upon successfully solving a challenge, a player can enter the solution into the 
 
 ___
 
-Authors: Fazlic Malik, Birnbacher Maximilian
+Authors: Malik F. & Maximilian B.

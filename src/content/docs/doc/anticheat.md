@@ -7,4 +7,4 @@ An Anti-Cheat-System is always important to have to prevent illegal and negative
 
 ___
 
-Authors: Schager Jannik
+Authors: Jannik S.

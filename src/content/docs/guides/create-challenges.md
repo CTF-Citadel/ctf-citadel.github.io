@@ -112,4 +112,4 @@ Why all this? We want to specify only one repo URL during event creation and cha
 
 ___
 
-Authors: Schager Jannik, Birnbacher Maximilian
+Authors: Jannik S. & Maximilian B.

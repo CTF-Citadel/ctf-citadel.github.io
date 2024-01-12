@@ -26,4 +26,4 @@ These values are then used by the webapp.
 
 ___
 
-Authors: Felix Slama
+Authors: Felix S.
