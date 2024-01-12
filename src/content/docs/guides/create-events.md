@@ -6,4 +6,4 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ___
 
-Authors: Birnbacher Maximilian
+Authors: Maximilian B.

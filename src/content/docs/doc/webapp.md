@@ -27,7 +27,7 @@ To make our database queries easier and safer, we chose to go with [Prisma](http
 
 Our current database schema looks like this:
 
-![DB-Schema](../../../assets/DB-Schema.webp)
+![DB-Schema](../../../assets/webapp/DB-Schema.webp)
 
 > **Note**: This Schema is still a work in progress and will be updated as we add all the necessary features.
 
@@ -46,7 +46,7 @@ All related logic to Lucia can be found under:
 - `src/pages/reset/*.astro`: The subpages and logic required to make password resets work
 - `src/pages/verify/*.astro`: The subpages and logic for validating email verification links
 
-Additionally we use the middleware integration that is documented [](https://lucia-auth.com/basics/handle-requests/#astro) which can be found in `src/middleware.ts`
+Additionally we use the middleware integration that is [documented here](https://lucia-auth.com/basics/handle-requests/#astro) which can be found in `src/middleware.ts`
 
 > **Note**: As we adapt to newer versions of Astro which handles middleware differently, this could need adaption both on our side and Lucia upstream.
 
@@ -54,7 +54,7 @@ Additionally we use the middleware integration that is documented [](https://luc
 
 The Signup Process is realtively straight forward and consists of creating a new user with Lucia and generating a new Email Verification Link.
 
-![Signup_Flow](../../../assets/Signup_Flow.svg)
+![Signup_Flow](../../../assets/webapp/Signup_Flow.svg)
 
 Until the User has verified their E-Mail, the Dashhboard will not allow the User to interact with the WebApp
 
@@ -62,6 +62,10 @@ Until the User has verified their E-Mail, the Dashhboard will not allow the User
 // ...
 session = await Astro.locals.auth.validate();
 if (!session) return Astro.redirect('/login');
+if (session.user.isBlocked) {
+    await auth.invalidateAllUserSessions(session.user.userId);
+    return Astro.redirect('/login');
+}
 if (!session.user.emailVerified) {
     return Astro.redirect('/verify/email');
 }
@@ -72,7 +76,7 @@ if (!session.user.emailVerified) {
 
 When the user clicks on the Email Verification Link that is sent to his E-Mail, the following happens:
 
-![Email-Verify](../../../assets/Email_Verify.svg)
+![Email-Verify](../../../assets/webapp/Email_Verify.svg)
 
 Now the user is verified and can re-login to the Platform.
 
@@ -80,7 +84,7 @@ Now the user is verified and can re-login to the Platform.
 
 Provided that our User now has successfully verified their email:
 
-![Login_Flow](../../../assets/Login_Flow.svg)
+![Login_Flow](../../../assets/webapp/Login_Flow.svg)
 
 Should the user still not have verified their Email, he will have to go through the Verification Process above.
 
@@ -88,9 +92,24 @@ Should the user still not have verified their Email, he will have to go through 
 
 The WebApp also provides the ability to reset a Users password via a Link that is sent per E-Mail in advance:
 
-![Reset_Flow](../../../assets/Reset_Flow.svg)
+![Reset_Flow](../../../assets/webapp/Reset_Flow.svg)
 
 After re-login, the user should be able to interact with the Platform again. A Email-Reverification is not required.
+
+### Blocked User Handling ###
+
+The main access check on each page also performs a general check if the user has the `isBlocked` boolean set to true, which can be done easily by the instance administrator from the admin panel.
+
+```ts
+// ...
+if (session.user.isBlocked) {
+    await auth.invalidateAllUserSessions(session.user.userId);
+    return Astro.redirect('/login');
+}
+// ...
+```
+
+Should the user be blocked, we immediately log him out of all active sessions and redirect him to the login page. This will continue to happen, until and administrator unblocks the user, which makes normal interactions possible again.
 
 ## Handling Client Requests ##
 
@@ -98,7 +117,7 @@ We perform all of the interactions with the database and the Remote Challenge Ba
 
 How this works can be seen here:
 
-![CS_SS-Interaction](../../../assets/CS-SS_Interaction.svg)
+![CS_SS-Interaction](../../../assets/webapp/CS-SS_Interaction.svg)
 
 By making requests from the backend we can also redact things like API-Tokens and other stuff that we may want to add as additional context for the Remote Backend or Database.
 
@@ -184,6 +203,13 @@ export async function privilegedWrapper(request: Request): Promise<Response> {
 
 These differ only in their permission scope and we aim to combine them into one unified wrapper with a privilege boolean instead. The switch statement can handle all necessary backend steps to be taken for fullfilling the user request, making sure that in the end we return a unified response to the user.
 
+This leads us to the actions that don't concern Lucia and Authentication, but rather the general workflow and workings of the webapp.
+
+Most of the logic is housed in these files:
+
+- `src/lib/actions.ts`: A meta class for actions and handlers that interact with the underlying database to perform various actions
+- `src/lib/backend.ts`: The main backend entrypoint that houses the privileged and unprivileged wrappers
+
 ___
 
-Authors: Birnbacher Maximilian, Fabian T.
+Authors: Maximilian B. & Fabian T.

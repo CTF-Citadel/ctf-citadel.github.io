@@ -9,7 +9,7 @@ Scores in our CTF represent user achievements or performance by completing our c
 
 In the Scoreboard the users will be able to see their teams and other teams performance. We do that by using an UI-Component which is basically a Chart which will show Team Points in a Line Diagram. 
 
-![Scoreboard](../../../assets/Scoreboard_Example.webp)
+![Scoreboard](../../../assets/scoreboard/Scoreboard_Example.webp)
 
 ## Leaderboard ##
 

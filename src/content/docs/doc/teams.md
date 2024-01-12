@@ -18,4 +18,4 @@ For further description
 
 ___
 
-Authors: Malik F.
+Authors: Fabian T.

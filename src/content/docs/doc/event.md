@@ -59,4 +59,4 @@ TODO
 
 ___
 
-Authors: Birnbacher Maximilian
+Authors: Maximilian B.

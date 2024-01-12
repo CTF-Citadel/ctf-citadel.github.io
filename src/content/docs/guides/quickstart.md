@@ -74,6 +74,8 @@ services:
       DB_HOST: 'mariadb'
       DB_NAME: 'lucia'
       DB_PASS: 'CHANGEME'
+      BACKEND_HOST: '127.0.0.1'
+      BACKEND_PORT: 8080
       TZ: Europe/Vienna
     restart: unless-stopped
 ```
@@ -101,6 +103,7 @@ The file might look a bit overwhelming at first so here is a walkthrough on what
 - `EMAIL_PASS`: Password for the E-Mail Account that you specified above.
 - `EMAIL_SERVICE`: This is the service specifier that will vary depending on what email provider you use. The default is `hotmail`, which works for Microsoft E-Mails.
 - `DB_*`: These are database parameters and should match the ones that you define for the MariaDB container itself. We won't got into more detail on each of them as they are pretty self-explanatory
+- `BACKEND_*`: These are backend parameters for the infra component, which should point to the host that your container infra runs on. We won't got into more detail on each of them as they are pretty self-explanatory
 
 Once you are happy with your changes, there is only one thing left to do:
 

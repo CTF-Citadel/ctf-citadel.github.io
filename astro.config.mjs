@@ -7,6 +7,9 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'CTF-Citadel',
+			customCss: [
+				'./src/styles/custom.css',
+			],
 			social: {
 				github: 'https://github.com/CTF-Citadel',
 			},
@@ -28,6 +31,7 @@ export default defineConfig({
 						{ label: 'Platform', link: '/doc/webapp' },
 						{ label: 'Infrastructure', link: '/doc/infra'},
 						{ label: 'Anti-Cheat', link: '/doc/anticheat' },
+						{ label: 'Admin-Panel', link: '/doc/adminpanel' },
 						{ label: 'Challenges', link: '/doc/challenges' },
 						{ label: 'Teams', link: '/doc/teams' },
 						{ label: 'Leaderboard', link: '/doc/leaderboard' },
