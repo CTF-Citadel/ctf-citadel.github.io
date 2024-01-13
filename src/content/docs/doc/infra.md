@@ -38,6 +38,13 @@ If the array is empty or contains something other than "running", the deployment
 In this case, a team can deploy a now instance of this challenge.
 
 If all containers in said array are running, the deployment is healthy, therefore the team won't be able to deploy another instance of the challenge.
+
+## Local volume mount.
+As described in "Challenge creation" the volumes of the deployment can be accessed voa the CLI or a graphical browser.
+This allows admins to easily modify flags, make fixes or make adjustments. 
+
+This would most likely conflict with a distributed (multi-node) deployment of the infra-middleware.
+
 ___
 
 Authors: Felix S.
