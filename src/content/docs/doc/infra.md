@@ -1,8 +1,13 @@
 ---
-title: Infra-Backend
-description: Documentation for the Infra-Backend
+title: Infra-Middleware
+description: Documentation for the Infra-Middleware
 ---
+//TODO: Bigpicture, flowchart
 The Infra-Middleware is used to control the entire lifecycle of the challenge container instances.
+
+It's a Docker container utilizing Docker in Docker for easy seperation.
+We use FastAPI to create a RESTful interface.
+
 
 ## Challenge fetch
 Once the Infra-Middleware container is started, we check for challenges.
@@ -24,6 +29,15 @@ Once the files are copied, we start the container build process using the parame
 After the finished build the middleware returns the UUID, the challenge and the environment variables.
 These values are then used by the webapp.
 
+## Instance health check
+To make sure that each team can only deploy one instance of each challenge, we have a health-check endpoint.
+This endpoint takes the instance-id sent to the webapp after a new instance and gets the corrosponding docker-internal IDs.
+Using the internal IDs, the status of each container in the instance deployment is checked and saved to an array.
+
+If the array is empty or contains something other than "running", the deployment is unhealthy.
+In this case, a team can deploy a now instance of this challenge.
+
+If all containers in said array are running, the deployment is healthy, therefore the team won't be able to deploy another instance of the challenge.
 ___
 
 Authors: Felix S.
