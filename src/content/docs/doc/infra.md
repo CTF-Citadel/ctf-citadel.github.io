@@ -44,6 +44,11 @@ As described in "Challenge creation" the volumes of the deployment can be access
 This allows admins to easily modify flags, make fixes or make adjustments. 
 
 This would most likely conflict with a distributed (multi-node) deployment of the infra-middleware.
+In that scenario, multiple connectiosn to the instances have to be opened to access the files.
+
+Two possible fixes/solutions to this:
+- Mount to network share (might cause a lot of io-wait)
+- A API will return the location of volume with a central dashboard
 
 ___
 
