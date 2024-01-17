@@ -15,6 +15,29 @@ To facilitate active participation, users must have a functional environment. To
 ## Challenge Solving
 Upon successfully solving a challenge, a player can enter the solution into the Solve Field and subsequently click the Submit button. To maintain fair competition, challenges can only be submitted once, preventing teams from accumulating points excessively. Additionally, if a player inadvertently submits a flag that corresponds to another team's correct answer, the system will promptly issue appropriate warnings to rectify any potential discrepancies.
 
+## Challenge Listing
+The Challenge listing is created using Svelte's `each` functionality, which enables us to iterate through every challenge and display its respective settings and difficulties.
+```
+    {:else if challenges.length > 0}
+        {#each challenges as challenge}
+            <Card class="flex-1 max-w-[32%] min-w-[32%]">
+                <div class="mb-2">
+                    <Label for="challenge-name" class="mb-2">Challenge Name</Label>
+                    <p id="challenge-name">{challenge.challenge_name}</p>
+                </div>
+                <Accordion flush>
+                    <AccordionItem>
+                        <span slot="header">Challenge Description</span>
+                        <p class="mb-2 text-gray-500 dark:text-gray-400">{challenge.challenge_description}</p>
+                    </AccordionItem>
+                </Accordion>
+            ...
+        ...
+    ...
+```
+
+
+
 ___
 
 Authors: Malik F. & Maximilian B.
