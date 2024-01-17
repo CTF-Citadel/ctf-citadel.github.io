@@ -8,6 +8,7 @@ The Infra-Middleware is used to control the entire lifecycle of the challenge co
 It's a Docker container utilizing Docker in Docker for easy seperation.
 We use FastAPI to create a RESTful interface.
 
+![Deployment Flowchart](../../../assets/infra/deploy-flowchart.webp)
 
 ## Challenge fetch
 Once the Infra-Middleware container is started, we check for challenges.
