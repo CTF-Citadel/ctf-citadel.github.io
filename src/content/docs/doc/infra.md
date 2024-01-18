@@ -10,6 +10,8 @@ We use FastAPI to create a RESTful interface.
 
 ![Deployment Flowchart](../../../assets/infra/deploy-flowchart.webp)
 
+# General workflow & features
+
 ## Challenge fetch
 Once the Infra-Middleware container is started, we check for challenges.
 This is done by downloading the challenge GitHub repo. The challenges can also be provided as a downloadable ZIP.
@@ -50,6 +52,22 @@ In that scenario, multiple connectiosn to the instances have to be opened to acc
 Two possible fixes/solutions to this:
 - Mount to network share (might cause a lot of io-wait)
 - A API will return the location of volume with a central dashboard
+
+
+# Scaling the infrastructure backend
+
+## The issue
+In the current version (as of 18.1.2024), the challenge deployment lacks any horizontal scalability. This is because of the way docker is intended to be used.
+
+## The solution
+To get around the restrictions of a single node docker deployment, we have three options:
+1. Have the middleware connect to multiple docker-sockets on multiple machines
+2. Rewriting the entire middleware for Kubernetes
+3. Using Docker Swarm to distribute the workload
+
+Nr. 1 be an unrealistic amount of work and anything but best practice.
+Nr. 2 is certainly intriguing, but k8s for a project of this size (Single day event) could be conisdered overkill
+That leaves us with Nr. 3, moving to Docker Swarm. This will allow for easier scaling and more flexibility, without the hassle of rebuilding the entire thing for Kubernetes.
 
 ___
 
