@@ -66,7 +66,7 @@ To get around the restrictions of a single node docker deployment, we have three
 3. Using Docker Swarm to distribute the workload
 
 Nr. 1 be an unrealistic amount of work and anything but best practice.
-Nr. 2 is certainly intreaging, but k8s for a project of this size (Single day event) could be conisdered overkill
+Nr. 2 is certainly intriguing, but k8s for a project of this size (Single day event) could be conisdered overkill
 That leaves us with Nr. 3, moving to Docker Swarm. This will allow for easier scaling and more flexibility, without the hassle of rebuilding the entire thing for Kubernetes.
 
 ___
