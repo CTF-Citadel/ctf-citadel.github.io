@@ -2,6 +2,10 @@
 title: Infrastructure
 description: Documentation of the Infrastructure & Infra-Middleware
 ---
+
+This shows the currently deployed infrastructure of the CTF-Citadale stack
+![Big Picture](../../../assets/infra/BigPicture.png)
+
 The Infra-Middleware is used to control the entire lifecycle of the challenge container instances.
 
 It's a Docker container utilizing Docker in Docker for easy separation.
