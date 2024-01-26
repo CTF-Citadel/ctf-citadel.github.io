@@ -89,19 +89,22 @@ _Simplified_
 
 The ingress controller will be exposed to the internet. The decision was made to avoid SSL/TLS issues.
 We will use LetsEncrypt to obtain trusted SSL certificates. This way, we can avoid certificate trust issues. (not everyone will use a AD-joined school machine)
+The cluster health will be monitored using the in-built OKD Dashboard.
 
-## Migrating the challenges
+### Migrating the challenges
 As specified above, each deployable challenge contains a docker-compose file. These files will be changed to deployment.yml's
 Additionally, in each deployment.yml the routing must be defined. This will be addressed in the next sprint.
 
-## Migrating the infra-middleware service
+### Migrating the infra-middleware service
 Currently, the infra-middleware interacts with a local Docker socket using the python Docker module.
 The affected functions will have to be rewritten. Most likely we will use the [Python Kubernetes Client](https://github.com/kubernetes-client/python) module.
 Also the instance subfolders won't be directly compatible. A possible fix could be a shared distributed volume. This will also be worked on in the next sprint.
 
-## Routing to the instances
+### Routing to the instances
 The goal is, that every single deployment is accessible via the Inter- or Intranet. To achieve this, we plan to use subdomains.
 For example: r4nd0mh3x.cluster.tophack.at
+
+This will be achieved using the OpenShift Router and a wildcard SSL Certificate for our domain *.cluster.tophack.at
 
 ___
 
