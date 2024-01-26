@@ -104,7 +104,7 @@ Also the instance subfolders won't be directly compatible. A possible fix could 
 The goal is, that every single deployment is accessible via the Inter- or Intranet. To achieve this, we plan to use subdomains.
 For example: r4nd0mh3x.cluster.tophack.at
 
-This will be achived using the OpenShift Router and a wildcard SSL Certificate for our domain *.cluster.tophack.at
+This will be achieved using the OpenShift Router and a wildcard SSL Certificate for our domain *.cluster.tophack.at
 
 ___
 
