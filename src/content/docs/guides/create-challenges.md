@@ -28,12 +28,10 @@ This file is for general description of the challenge and is just **optional**, 
 
 ___
 
-
 **Writeup.md** <br/>
-This file should be a writeup from the challenge-author himself, this should be released after the event is over. Although this file is **optional**, it is recommended for the best learn experience of the participants.
+This file should be a writeup from the challenge-author himself, this should be released after the event is over. Although this file is **optional**, it is recommended for the best learning experience of the participants.
 
 ___
-
 
 **Dockerfile** <br/>
 This file may contain further arguments to setup a certain docker-container. Can be named differently, but keep Dockerfile in the name.

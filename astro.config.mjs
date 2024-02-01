@@ -21,7 +21,7 @@ export default defineConfig({
 					label: 'Guides',
 					items: [
 						{ label: 'Quick Start', link: '/guides/quickstart' },
-						{ label: 'Event Creation', link: '/guides/create-events' },
+						{ label: 'Admin-Panel', link: '/guides/adminpanel' },
 						{ label: 'Challenge Creation', link: '/guides/create-challenges' },
 					],
 				},
@@ -31,12 +31,14 @@ export default defineConfig({
 						{ label: 'Platform', link: '/doc/webapp' },
 						{ label: 'Infrastructure', link: '/doc/infra'},
 						{ label: 'Anti-Cheat', link: '/doc/anticheat' },
-						{ label: 'Admin-Panel', link: '/doc/adminpanel' },
 						{ label: 'Challenges', link: '/doc/challenges' },
 						{ label: 'Teams', link: '/doc/teams' },
 						{ label: 'Leaderboard', link: '/doc/leaderboard' },
-						{ label: 'Event', link: '/doc/event' },
+						{ label: 'Events', link: '/doc/events' },
 					],
+				},
+				{
+					label: 'About', link: '/about'
 				},
 			],
 		}),

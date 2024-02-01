@@ -62,7 +62,6 @@ services:
       TZ: Europe/Vienna
     volumes:
       - ./data/mariadb:/var/lib/mysql
-      - ./db:/docker-entrypoint-initdb.d
     restart: unless-stopped
   astro:
     image: ghcr.io/ctf-citadel/webapp:main
@@ -73,6 +72,7 @@ services:
       EMAIL_PASS: 'CHANGEME'
       DB_HOST: 'mariadb'
       DB_NAME: 'lucia'
+      DB_USER: 'root'
       DB_PASS: 'CHANGEME'
       BACKEND_HOST: '127.0.0.1'
       BACKEND_PORT: 8080
@@ -95,7 +95,6 @@ The file might look a bit overwhelming at first so here is a walkthrough on what
 > ```
 
 - `./data/mariadb:/var/lib/mysql`: This is where your database stores data, which is user data, challenges, ongoing events and more. Choose this path wisely as it is where your data will reside!
-- `./db:/docker-entrypoint-initdb.d`: This is the initialization Schema Path for the MariaDB database. This should not need changing if you didn't alter the directory structure. As with the NGINX config, feel free to take a look at the initial schema to see what it does.
 
 ### Environment Variables ###
 
@@ -122,6 +121,79 @@ docker-compose up -d
 This will start (and build) all containers and if you go to `https://localhost:443/`, you should see the Login Page show up.
 
 > **Hint**: Keep in mind that the first user to sign-up on a newly created instance will automatically be assigned the administrator role!
+
+## Deploying for Development ##
+
+For tinkering with the Platform itself, one may want to spin up the other profile in the provided `docker-compose.yaml`, to spin up a standalone MariaDB instance.
+
+```bash
+docker-compose --profile dev up -d --build
+```
+
+This database will then listen on `localhost:3306`, and can be accessed by starting the WebApp in development mode from the project root.
+
+Be aware that the application still needs all the environment variables, which are otherwise provided by the `docker-compose.yaml` file. This can be done on Linux based systems like so:
+
+```bash
+INSTANCE_NAME='testCTF' \
+EMAIL_SERVICE='hotmail' \
+EMAIL_NAME='some@example.com' \
+EMAIL_PASS='CHANGEME' \
+DB_HOST='127.0.0.1' \
+DB_NAME='lucia' \
+DB_USER='root' \
+DB_PASS='CHANGEME' \
+BACKEND_HOST='127.0.0.1' \
+BACKEND_PORT=8080 \
+npm run dev
+```
+
+Or, if you are developing on a Windows based system like so:
+
+```powershell
+$env:INSTANCE_NAME="testCTF"
+$env:EMAIL_SERVICE="hotmail"
+$env:EMAIL_NAME='some@example.com' 
+$env:EMAIL_PASS='CHANGEME'
+$env:DB_HOST='127.0.0.1'
+$env:DB_NAME='lucia'
+$env:DB_USER='root'
+$env:DB_PASS="CHANGEME"
+$env:BACKEND_HOST="127.0.0.1" 
+$env:BACKEND_PORT="8080"
+npm run dev
+```
+
+This will start the Web Application in Astro's development mode. Since we check for this in the Authentication events, you will be able to interact, without actually logging in, since you are currently in a "Dummy Session".
+
+```ts
+// index.astro
+import { DUMMY_SESSION } from '../lib/helpers';
+// ...
+let session = DUMMY_SESSION;
+
+if (!import.meta.env.DEV) {
+    // ...
+    session = { ...Astro.locals.user };
+}
+
+<Layout title="CTF-Citadel">
+    <Header
+        username={session.username}
+        interactive={true}
+        admin={session.user_role == 'admin' ? true : false}
+        client:visible
+    />
+    // ...
+</Layout>
+// ...
+```
+
+This allows you to tinker the platform more easily and adapt it to your needs. It will also automatically assign you the administrator `user_role`.
+
+:::caution
+> **DO UNDER NO CIRRCUMSTANCES USE THE DEVELOPMENT MODE IN PRODUCTION OR ACTUAL CTF SCENARIOS!**
+:::
 
 ## Deploying Barebones ##
 

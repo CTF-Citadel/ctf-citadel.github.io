@@ -1,5 +1,9 @@
-/* Dark mode colors. */
+
+
 :root {
+	--hero-brightness: 300%;
+	--purple-hsl: 255, 60%, 60%;
+	--overlay-blurple: hsla(var(--purple-hsl), 0.2);
 	--sl-color-accent-low: #301b30;
 	--sl-color-accent: #934695;
 	--sl-color-accent-high: #dabeda;
@@ -12,8 +16,10 @@
 	--sl-color-gray-6: #27262a;
 	--sl-color-black: #18181a;
 }
-/* Light mode colors. */
+
 :root[data-theme='light'] {
+	--hero-brightness: 0%;
+	--purple-hsl: 255, 85%, 65%;
 	--sl-color-accent-low: #e4cfe4;
 	--sl-color-accent: #954897;
 	--sl-color-accent-high: #452446;
@@ -26,4 +32,27 @@
 	--sl-color-gray-6: #eeedef;
 	--sl-color-gray-7: #f6f6f7;
 	--sl-color-black: #ffffff;
+}
+
+[data-has-hero] .page {
+	background:
+		linear-gradient(215deg, var(--sl-color-accent-low), transparent 40%),
+		radial-gradient(var(--sl-color-accent-low), transparent 40%) no-repeat -60vw -40vh / 105vw 200vh,
+		radial-gradient(var(--sl-color-accent-low), transparent 65%) no-repeat 50% calc(100% + 20rem) /
+			60rem 30rem;
+}
+
+[data-has-hero] header {
+	border-bottom: 1px solid transparent;
+	background-color: transparent;
+	-webkit-backdrop-filter: blur(16px);
+	backdrop-filter: blur(16px);
+}
+
+[data-has-hero] .hero > img {
+	filter: brightness(var(--hero-brightness));
+}
+
+.about-image {
+	filter: brightness(var(--hero-brightness));
 }
