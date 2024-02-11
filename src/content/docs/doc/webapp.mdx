@@ -21,7 +21,7 @@ We settled on modern technologies and frameworks to build CTF-Citadel from the g
 
 ## Database Integration
 
-We use MariaDB as our primary and only database to store userdata from Lucia, as well as Event and Challenge Data.
+We initially used MariaDB as our primary and only database to store userdata from Lucia, as well as Event and Challenge Data.
 
 To make our database queries easier and safer, we chose to go with [Prisma](https://www.prisma.io/) in the first place, which integrates with Lucia 2.0.
 
@@ -29,6 +29,8 @@ To make our database queries easier and safer, we chose to go with [Prisma](http
 Prisma was depreciated as soon as Lucia V3 was released, which included a new adapter for [Drizzle ORM](https://orm.drizzle.team/).
 
 The decision was made to go this route because the development team was not satisifed with the performance and usage habits of Prisma so far.
+
+Additionally, we switched to a PostgreSQL database during development, for performance reasons and other benefits that Postgres offers.
 :::
 
 ## Migration to Lucia 3.0 and DrizzleORM
@@ -76,6 +78,25 @@ async checkTeamNameExist(teamName: string) {
 // ...
 ```
 
+## Migration to PostgreSQL
+
+This was a rather easy feat, thanks to the already exisitng DrizzleORM adapter, no queries needed to be changed, as they function essentially the same way as before.
+
+We only had to change our initiation adapter and base table scheme a bit, to reflect the changes that Postgres needed.
+
+```ts
+// schema.ts
+import { mysqlTable, varchar } from 'drizzle-orm/mysql-core';
+// ...
+export const users = pgTable('users', {
+    id: text('id').primaryKey(),
+    username: text('username').unique(),
+    hashed_password: text('hashed_password'),
+    // ...
+});
+// ...
+```
+
 ## Login and Authentication
 
 Most of the functionality is handled directly by Lucia Auth and therefore also documented on [their page](https://lucia-auth.com/getting-started/).
@@ -84,20 +105,42 @@ We used the basic example for Astro that is [provided here](https://github.com/l
 
 All logic related to Lucia can be found under:
 
+### Lib Subcomponents
+
 -   `src/lib/lucia.ts`: Base Initializations for making Lucia work
 -   `src/lib/lucia-db.ts`: All additional interactions with the database that relate to Lucia in terms of password reset and email verification
 -   `src/lib/lucia-db.ts`: All additional interactions with the database that relate to Lucia in terms of password reset and email verification
--   `src/lib/schema.ts`: The defined DrizzleORM database schema for MariaDB
+-   `src/lib/schema.ts`: The defined DrizzleORM database schema for PostgreSQL
 -   `src/lib/db.ts`: Database Adapter specifications and Database initial migration handling
+
+### Page Components
+
 -   `src/pages/login.astro`: Main Login page for logging in users and creating a new session
 -   `src/pages/signup.astro`: Main Signup Page for creation of new users
 -   `src/pages/logout.astro`: Logout API component that removes a user session
 -   `src/pages/reset/*.astro`: The subpages and logic required to make password resets work
 -   `src/pages/verify/*.astro`: The subpages and logic for validating email verification links
 
+### API Routes
+
+-   `src/pages/api/v1/user.ts`: User-Level Privilege API-Calls for general platform data
+-   `src/pages/api/v1/admin.ts`: Admin-Level Privilege API-Calls for fetching and managing platform data
+-   `src/pages/api/v1/account/auth.ts`: Authentication logic for login procedure
+-   `src/pages/api/v1/account/new.ts`: User Creation logic for signing up new users
+-   `src/pages/api/v1/token/email.ts`: Email Verification Token generation
+-   `src/pages/api/v1/token/password.ts`: Password Reset Token generation
+-   `src/pages/api/v1/reset/[id].ts`: Reset Endpoint for validating password reset tokens
+
 Additionally we use the middleware integration that is [documented here](https://lucia-auth.com/guides/validate-session-cookies/astro) which can be found in `src/middleware.ts`.
 
-### Signup Flow
+## Switch to seperate API-Routes
+
+At a point in development, where the main `.astro` files became to cluttered in terms of `POST` handler logic, the decision was made to split them.
+This was done mainly for a better overview and seperation of critical logic such as signup and logn, as well as the normal API interaction for general data presentation.
+
+After the restructure, all API-Calls are now made through `/api/v1/` based endpoints, which consolidates everything in one place, making it easily expandable and easier to audit.
+
+## Signup Flow
 
 The Signup Process is realtively straight forward and consists of creating a new user with Lucia and generating a new Email Verification Link.
 
@@ -128,7 +171,7 @@ When the user clicks on the Email Verification Link that is sent to his E-Mail, 
 
 Now the user is verified and can re-login to the Platform.
 
-### Login Flow
+## Login Flow
 
 Provided that our User now has successfully verified their email:
 
@@ -144,7 +187,7 @@ The WebApp also provides the ability to reset a Users password via a Link that i
 
 After re-login, the user should be able to interact with the Platform again. A Email-Reverification is not required.
 
-### Blocked User Handling
+## Blocked User Handling
 
 The main access check on each page also performs a general check if the user has the `isBlocked` boolean set to true, which can be done easily by the instance administrator from the admin panel.
 
@@ -325,24 +368,36 @@ This class is designed to be expandable as much as needed, although most of the 
 The `requestWrapper` always defines which endpoint a request is made to, as pages handle these wrapper request in different ways, either they employ the `privileged` or `normal` wrapper.
 
 ```ts
-// teams.astro
+// /api/v1/user.ts
+import type { APIRoute } from "astro";
+import { normalWrapper } from "../../../lib/backend";
 // ...
-if (Astro.request.method === 'POST') {
-    return await normalWrapper(Astro.request);
-}
+export const POST: APIRoute = async (context) => {
+    // ...
+    if (!context.locals.user) return context.redirect('/login');
+    session = { ...context.locals.user };
+    // ...
+    return await normalWrapper(context.request);
+};
 // ...
 ```
 
 ```ts
-// settings.astro
+// /api/v1/admin.ts
+import type { APIRoute } from "astro";
+import { privilegedWrapper } from "../../../lib/backend";
 // ...
-if (Astro.request.method === 'POST') {
-    if (session.user.user_role != 'admin') {
+export const POST: APIRoute = async (context) => {
+    // ...
+    if (!context.locals.user) return context.redirect('/login');
+    session = { ...context.locals.user };
+    // ...
+    if (session.user_role != 'admin') {
         return new Response('Forbidden', { status: 403 });
     } else {
-        return await privilegedWrapper(Astro.request);
+        return await privilegedWrapper(context.request);
     }
-}
+};
 // ...
 ```
 

@@ -53,25 +53,29 @@ services:
     environment:
       TZ: Europe/Vienna
     restart: unless-stopped
-  mariadb:
-    image: mariadb:latest
-    hostname: mariadb
+  postgres:
+    image: postgres:latest
+    hostname: postgres
     environment:
-      MARIADB_DATABASE: 'lucia'
-      MARIADB_ROOT_PASSWORD: 'CHANGEME'
+      POSTGRES_USER: 'root'
+      POSTGRES_PASSWORD: 'CHANGEME'
+      POSTGRES_DB: 'citadel'
       TZ: Europe/Vienna
     volumes:
-      - ./data/mariadb:/var/lib/mysql
+      - ./data/postgres:/var/lib/postgresql/data
     restart: unless-stopped
+    profiles:
+      - full
   astro:
     image: ghcr.io/ctf-citadel/webapp:main
     hostname: astro
     environment:
+      INSTANCE_NAME: 'testCTF'
       EMAIL_SERVICE: 'hotmail'
       EMAIL_NAME: 'someone@example.com'
       EMAIL_PASS: 'CHANGEME'
-      DB_HOST: 'mariadb'
-      DB_NAME: 'lucia'
+      DB_HOST: 'postgres'
+      DB_NAME: 'citadel'
       DB_USER: 'root'
       DB_PASS: 'CHANGEME'
       BACKEND_HOST: '127.0.0.1'
@@ -87,21 +91,22 @@ The file might look a bit overwhelming at first so here is a walkthrough on what
 ### Bind Mounts ###
 
 - `./proxy/conf:/etc/nginx/conf.d`: This is a bind mount to the configuration files for the NGINX reverse proxy. This path should not need changing as long as you do not change the file location of the `docker-compose.yaml`. You can navigate to `proxy/` from the repo root and examine the provided config file. If desired you can use a different proxy or integrate it into an already exisiting one.
-- `./proxy/conf:/etc/nginx/conf.d`: This is the bind mount to your SSL Certificates that NGINX will use to secure your traffic over HTTPS. If you examined the config file you might have noticed that it will always look for `server.crt` and `server.key`. You should either name your certfiles accordingly or modify the paths in the config file mentioned above
+- `./proxy/conf:/etc/nginx/conf.d`: This is the bind mount to your SSL Certificates that NGINX will use to secure your traffic over HTTPS. If you examined the config file you might have noticed that it will always look for `server.crt` and `server.key`. You should either name your certfiles accordingly or modify the paths in the config file mentioned above.
+- `./data/postgres:/var/lib/mysql`: This is where your database stores data, which is user data, challenges, ongoing events and more. Choose this path wisely as it is where your data will reside!
 
-> **Hint**: Although not advised, you can generate self-signed certificates with this neat one-liner:
-> ```bash
-> openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt
-> ```
-
-- `./data/mariadb:/var/lib/mysql`: This is where your database stores data, which is user data, challenges, ongoing events and more. Choose this path wisely as it is where your data will reside!
+:::note
+Although not advised, you can generate self-signed certificates with this neat one-liner:
+```bash
+openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt
+```
+:::
 
 ### Environment Variables ###
 
 - `EMAIL_NAME`: This is the E-Mail that will be used for Verification and Password Reset E-Mails for Users.
 - `EMAIL_PASS`: Password for the E-Mail Account that you specified above.
 - `EMAIL_SERVICE`: This is the service specifier that will vary depending on what email provider you use. The default is `hotmail`, which works for Microsoft E-Mails.
-- `DB_*`: These are database parameters and should match the ones that you define for the MariaDB container itself. We won't got into more detail on each of them as they are pretty self-explanatory
+- `DB_*`: These are database parameters and should match the ones that you define for the PostgreSQL container itself. We won't got into more detail on each of them as they are pretty self-explanatory
 - `BACKEND_*`: These are backend parameters for the infra component, which should point to the host that your container infra runs on. We won't got into more detail on each of them as they are pretty self-explanatory
 
 Once you are happy with your changes, there is only one thing left to do:
@@ -120,17 +125,19 @@ docker-compose up -d
 
 This will start (and build) all containers and if you go to `https://localhost:443/`, you should see the Login Page show up.
 
-> **Hint**: Keep in mind that the first user to sign-up on a newly created instance will automatically be assigned the administrator role!
+:::note
+Keep in mind that the first user to sign-up on a newly created instance will automatically be assigned the administrator role!
+:::
 
 ## Deploying for Development ##
 
-For tinkering with the Platform itself, one may want to spin up the other profile in the provided `docker-compose.yaml`, to spin up a standalone MariaDB instance.
+For tinkering with the Platform itself, one may want to spin up the other profile in the provided `docker-compose.yaml`, to spin up a standalone PostgreSQL instance.
 
 ```bash
 docker-compose --profile dev up -d --build
 ```
 
-This database will then listen on `localhost:3306`, and can be accessed by starting the WebApp in development mode from the project root.
+This database will then listen on `localhost:5432`, and can be accessed by starting the WebApp in development mode from the project root.
 
 Be aware that the application still needs all the environment variables, which are otherwise provided by the `docker-compose.yaml` file. This can be done on Linux based systems like so:
 
@@ -140,7 +147,7 @@ EMAIL_SERVICE='hotmail' \
 EMAIL_NAME='some@example.com' \
 EMAIL_PASS='CHANGEME' \
 DB_HOST='127.0.0.1' \
-DB_NAME='lucia' \
+DB_NAME='citadel' \
 DB_USER='root' \
 DB_PASS='CHANGEME' \
 BACKEND_HOST='127.0.0.1' \
@@ -156,7 +163,7 @@ $env:EMAIL_SERVICE="hotmail"
 $env:EMAIL_NAME='some@example.com' 
 $env:EMAIL_PASS='CHANGEME'
 $env:DB_HOST='127.0.0.1'
-$env:DB_NAME='lucia'
+$env:DB_NAME='citadel'
 $env:DB_USER='root'
 $env:DB_PASS="CHANGEME"
 $env:BACKEND_HOST="127.0.0.1" 
@@ -194,10 +201,6 @@ This allows you to tinker the platform more easily and adapt it to your needs. I
 :::caution
 > **DO UNDER NO CIRRCUMSTANCES USE THE DEVELOPMENT MODE IN PRODUCTION OR ACTUAL CTF SCENARIOS!**
 :::
-
-## Deploying Barebones ##
-
-> ***Coming Soon...***
 
 ___
 
