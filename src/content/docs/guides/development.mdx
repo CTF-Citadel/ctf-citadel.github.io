@@ -1,0 +1,94 @@
+---
+title: Development
+---
+
+If you want to tweak CTF-Citadel to your own likings, or contribute to our codebase, you will need to have some things installed and setup.
+
+## Preparing your Environment
+
+There are a few things you will need to have installed.
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Node.js](https://nodejs.org/en/download)
+- [git](https://git-scm.com/downloads)
+
+If you are developing on Linux, you may be able to pull all of these through your distro's respectable package manager (`apt`, `yum`, `pacman`, ...).
+
+Developing on Windows might hit some roadblocks when dealing with Docker, which can be circumvented by using a Virtual Machine, which can handle f.E. the PostgreSQL test instance.
+
+## Deploying for Development
+
+For tinkering with the Platform itself, one may want to spin up the dev profile in the provided `docker-compose.yaml`, to spin up a standalone PostgreSQL instance.
+
+```bash
+docker-compose --profile dev up -d --build
+```
+
+This database will then listen on `localhost:5432`, and can be accessed by starting the WebApp in development mode from the project root.
+
+Be aware that the application still needs all the environment variables, which are otherwise provided by the `docker-compose.yaml` file. This can be done on Linux based systems like so:
+
+```bash
+INSTANCE_NAME='testCTF' \
+EMAIL_SERVICE='hotmail' \
+EMAIL_NAME='some@example.com' \
+EMAIL_PASS='CHANGEME' \
+DB_HOST='127.0.0.1' \
+DB_NAME='citadel' \
+DB_USER='root' \
+DB_PASS='CHANGEME' \
+BACKEND_HOST='127.0.0.1' \
+BACKEND_PORT=8080 \
+npm run dev
+```
+
+Or, if you are developing on a Windows based system like so:
+
+```powershell
+$env:INSTANCE_NAME="testCTF"
+$env:EMAIL_SERVICE="hotmail"
+$env:EMAIL_NAME='some@example.com' 
+$env:EMAIL_PASS='CHANGEME'
+$env:DB_HOST='127.0.0.1'
+$env:DB_NAME='citadel'
+$env:DB_USER='root'
+$env:DB_PASS="CHANGEME"
+$env:BACKEND_HOST="127.0.0.1" 
+$env:BACKEND_PORT="8080"
+npm run dev
+```
+
+This will start the Web Application in Astro's development mode. Since we check for this in the Authentication events, you will be able to interact, without actually logging in, since you are currently in a "Dummy Session".
+
+```ts
+// index.astro
+import { DUMMY_SESSION } from '../lib/helpers';
+// ...
+let session = DUMMY_SESSION;
+
+if (!import.meta.env.DEV) {
+    // ...
+    session = { ...Astro.locals.user };
+}
+
+<Layout title="CTF-Citadel">
+    <Header
+        username={session.username}
+        interactive={true}
+        admin={session.user_role == 'admin' ? true : false}
+        client:visible
+    />
+    // ...
+</Layout>
+// ...
+```
+
+This allows you to tinker the platform more easily and adapt it to your needs. It will also automatically assign you the administrator `user_role`.
+
+:::caution
+> **DO UNDER NO CIRRCUMSTANCES USE THE DEVELOPMENT MODE IN PRODUCTION OR ACTUAL CTF SCENARIOS!**
+:::
+
+___
+
+Authors: Fabian T.
