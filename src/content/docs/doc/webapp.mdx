@@ -3,7 +3,7 @@ title: Platform
 description: Documentation for the WebApp
 ---
 
-This is a complete introduction into how CTF-Citadel works under the hood.
+Insights into Development decisions and inner workings of the CTF-Citadel WebApp
 
 ## Motivation
 
@@ -33,7 +33,7 @@ The decision was made to go this route because the development team was not sati
 Additionally, we switched to a PostgreSQL database during development, for performance reasons and other benefits that Postgres offers.
 :::
 
-## Migration to Lucia 3.0 and DrizzleORM
+### Migration to Lucia 3.0 and DrizzleORM
 
 Shortly after the release of Lucia Version 3.0, the decision was made to switch to [Drizzle ORM](https://orm.drizzle.team/) as an ORM, which integrates exceptionally well with TypeScript.
 
@@ -78,7 +78,7 @@ async checkTeamNameExist(teamName: string) {
 // ...
 ```
 
-## Migration to PostgreSQL
+### Migration to PostgreSQL
 
 This was a rather easy feat, thanks to the already exisitng DrizzleORM adapter, no queries needed to be changed, as they function essentially the same way as before.
 
