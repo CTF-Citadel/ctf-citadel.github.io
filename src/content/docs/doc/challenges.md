@@ -16,7 +16,7 @@ To facilitate active participation, users must have a functional environment. To
 Upon successfully solving a challenge, a player can enter the solution into the Solve Field and subsequently click the Submit button. To maintain fair competition, challenges can only be submitted once, preventing teams from accumulating points excessively. Additionally, if a player inadvertently submits a flag that corresponds to another team's correct answer, the system will promptly issue appropriate warnings to rectify any potential discrepancies.
 
 ## Challenge Listing
-The Challenge listing is created using Svelte's `each` functionality, which enables the developer to iterate through every category and challenge and display its respective settings and difficulties. The approch that was used is listed below:
+The Challenge listing leverages Svelte's each functionality. This powerful feature enables developers to efficiently iterate through every category and challenge, dynamically displaying their respective settings and difficulty levels. The approch that was used is listed below:
 
 ```
     {:else if challenges.length > 0}
