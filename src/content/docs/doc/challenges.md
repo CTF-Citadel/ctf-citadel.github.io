@@ -16,28 +16,35 @@ To facilitate active participation, users must have a functional environment. To
 Upon successfully solving a challenge, a player can enter the solution into the Solve Field and subsequently click the Submit button. To maintain fair competition, challenges can only be submitted once, preventing teams from accumulating points excessively. Additionally, if a player inadvertently submits a flag that corresponds to another team's correct answer, the system will promptly issue appropriate warnings to rectify any potential discrepancies.
 
 ## Challenge Listing
-The Challenge listing is created using Svelte's `each` functionality, which enables us to iterate through every challenge and display its respective settings and difficulties.
+The Challenge listing is created using Svelte's `each` functionality, which enables the developer to iterate through every category and challenge and display its respective settings and difficulties. The approch that was used is listed below:
+
 ```
     {:else if challenges.length > 0}
-        {#each challenges as challenge}
-            <Card class="flex-1 max-w-[32%] min-w-[32%]">
-                <div class="mb-2">
-                    <Label for="challenge-name" class="mb-2">Challenge Name</Label>
-                    <p id="challenge-name">{challenge.challenge_name}</p>
-                </div>
-                <Accordion flush>
-                    <AccordionItem>
-                        <span slot="header">Challenge Description</span>
-                        <p class="mb-2 text-gray-500 dark:text-gray-400">{challenge.challenge_description}</p>
-                    </AccordionItem>
-                </Accordion>
-            ...
+        {#each sortedData as category}
+            <h1 class="text-3xl text-center mt-8">Category: {category[0].challenge_category}</h1>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-2 place-items-center">
+            
+            {#each category as challenge}
+                <Card class="flex-1 max-w-[32%] min-w-[32%]">
+                    <div class="mb-2">
+                        <Label for="challenge-name" class="mb-2">Challenge Name</Label>
+                        <p id="challenge-name">{challenge.challenge_name}</p>
+                    </div>
+                    <Accordion flush>
+                        <AccordionItem>
+                            <span slot="header">Challenge Description</span>
+                            <p class="mb-2 text-gray-500 dark:text-gray-400">{challenge.challenge_description}</p>
+                        </AccordionItem>
+                    </Accordion>
+                ...
         ...
     ...
 ```
 
+This results in the challenges being listed below the category name, whilst being sorted by difficulty:
+![Challenge Listing Showcase](../../../assets/webapp/challenge_listing.webp)
 
 
 ___
 
-Authors: Malik F. & Maximilian B.
+Authors: Malik F.
