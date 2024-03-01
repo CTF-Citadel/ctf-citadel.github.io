@@ -1,26 +1,30 @@
 ---
-title: Welcome to CTF Citadel
+title: CTF-Citadel
 description: CTF done right.
 template: splash
+head:
+  - tag: title
+    content: Welcome | CTF-Citadel
 hero:
-  tagline: CTF done right.
-  image:
-    file: ../../assets/splash.webp
-  actions:
-    - text: Get Started
-      link: /introduction
-      icon: right-arrow
-      variant: primary
-    - text: GitHub
-      link: https://github.com/CTF-Citadel/
-      icon: external
+    tagline: CTF done right.
+    image:
+        file: ../../assets/citadel_logo_grey.webp
+    actions:
+        - text: Get Started
+          link: /introduction
+          icon: right-arrow
+          variant: primary
+        - text: GitHub
+          link: https://github.com/CTF-Citadel/
+          icon: external
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import About from '../..//components/about.astro';
 
 ## Features
 
-<CardGrid stagger>
+<CardGrid>
     <Card title="Anti-Cheat" icon="error">
         Combats Flag Sharing automatically!
     </Card>
@@ -34,3 +38,9 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
         Many more Quality of Life features!
     </Card>
 </CardGrid>
+
+<About title="A project by">
+  This software is released and distributed under the terms of the GNU General Public License 3.0
+
+  <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">More Information</a>
+</About>

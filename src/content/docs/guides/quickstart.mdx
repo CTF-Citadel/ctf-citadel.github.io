@@ -1,0 +1,122 @@
+---
+title: Quick Start
+---
+
+Hosting your own CTF can be quite tricky, but we want to change that!
+
+Below you will find all the necessary steps to get your own instance of CTF-Citadel up and running in no time!
+
+## Initial Setup
+
+We can start off by cloning the main WebApp Repository
+
+```bash
+# clone the repo
+git clone https://github.com/CTF-Citadel/webapp
+# change into the examples folder
+cd webapp/examples/
+```
+
+Great, now we have everything we need to get started!
+
+The examples subdirectory contains config files for NGINX, as well as a dedicated subfolder for SSL-Certificates, which is `nginx/ssl/`.
+
+You may put two files in here named `server.crt` and `server.key` respectably, which is you Public Certificate and Private Key.
+
+:::note
+Although not advised, you can generate self-signed certificates with this neat one-liner:
+```bash
+openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out server.crt
+```
+:::
+
+Self-signed certificates are not recommended, you should of course have some valid domain to register officially signed SSL-Certificates.
+Although when deploying the platform locally, inaccessible to the outside world, self-signed Certificates may be sufficient.
+
+## Deploy Using Docker ##
+
+We made hosting your own instance of CTF-Citadel really easy to accoplish using the power of Docker.
+
+Fresh Images of our WebApp are built on every push to `master` and can be pulled from here:
+
+```bash
+docker pull ghcr.io/ctf-citadel/webapp:main
+```
+
+An way easier method is to use our `docker-compose.yaml` file already present in the repo.
+
+This automatically pulls prebuilt images from their respective container registries and should get you up and running in no time.
+
+Before that, it may be a good thing to customize some things for your needs, which is described below.
+
+### What to change ###
+
+The file might look a bit overwhelming at first so here is a walkthrough on what you will need to change.
+
+### Bind Mounts ###
+
+- `./nginx/nginx.conf:/etc/nginx/nginx.conf`: This is a bind mount to the configuration files for the NGINX reverse proxy. This path should not need changing as long as you do not change the file location of the `docker-compose.yaml`. You can navigate to `proxy/` from the repo root and examine the provided config file. If desired you can use a different proxy or integrate it into an already exisiting one.
+- `./nginx/ssl:/etc/ssl/private`: This is the bind mount to your SSL Certificates that NGINX will use to secure your traffic over HTTPS. If you examined the config file you might have noticed that it will always look for `server.crt` and `server.key`. You should either name your certfiles accordingly or modify the paths in the config file mentioned above.
+- `./data/postgres:/var/lib/mysql`: This is where your database stores data, which is user data, challenges, ongoing events and more. Choose this path wisely as it is where your data will reside!
+
+### Environment Variables
+
+- `EMAIL_NAME`: This is the E-Mail that will be used for Verification and Password Reset E-Mails for Users.
+- `EMAIL_PASS`: Password for the E-Mail Account that you specified above.
+- `EMAIL_SERVICE`: This is the service specifier that will vary depending on what email provider you use. The default is `hotmail`, which works for Microsoft E-Mails.
+- `DB_*`: These are database parameters and should match the ones that you define for the PostgreSQL container itself. We won't got into more detail on each of them as they are pretty self-explanatory
+- `BACKEND_*`: These are backend parameters for the infra component, which should point to the host that your container infra runs on. We won't got into more detail on each of them as they are pretty self-explanatory
+
+### Starting the Containers
+
+Once you are happy with your changes, there is only one thing left to do:
+
+```bash
+docker-compose up -d
+```
+
+This will pull and start all containers and if you go to `https://localhost:443/`, you should see the Login Page show up.
+
+:::note
+Keep in mind that the first user to sign-up on a newly created instance will automatically be assigned the administrator role!
+:::
+
+## Manual Building
+
+If you want to test the latest bleeding-edge changes directly from `main` or maybe incorporate some changes of your own, you will need to build a new Docker images locally.
+
+Doing that is pretty easy and can be done by modifying the `docker-compose.yaml` in the examples folder.
+
+```yaml
+version: '3'
+services:
+  # ...
+  # You can leave the nginx and postgres containers identical
+  # ...
+  astro:
+    build:                    # <- changing from image to build
+      context: ${PWD}/../     # <- specify our project root
+      dockerfile: Dockerfile  # <- name of the Dockerfile to build from
+  # ...
+  # Rest is the same
+  # ...
+```
+
+:::caution
+Do make sure that you are in the correct folder, so Docker can actually find and build from the project root.
+
+If you were to place the `docker-compose.yaml` in the repository root, you could set `context: .`, but keep in mind that this will require you to change the bind mounts.
+Because the nginx configuration files are located in the `examples/` directory.
+:::
+
+If you did the above correctly you should now be able to build your own image, telling Docker to do so.
+
+```bash
+docker-compose up -d --build
+```
+
+This should build the Astro WebApp directly from source and start the other containers automatically.
+
+___
+
+Authors: Fabian T.
