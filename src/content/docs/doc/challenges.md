@@ -47,4 +47,4 @@ This results in the challenges being listed below the category name, whilst bein
 
 ___
 
-Authors: Malik F.
+Authors: Malik F. & Maximilian B.
