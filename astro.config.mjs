@@ -31,6 +31,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Web-App', link: '/doc/webapp' },
 						{ label: 'Anti-Cheat', link: '/doc/anticheat' },
+						{ label: 'Firstblood', link: '/doc/firstblood' },
 						{ label: 'Infrastructure', link: '/doc/infra'},
 						{ label: 'Challenges', link: '/doc/challenges' },
 						{ label: 'Events', link: '/doc/events' },

@@ -4,7 +4,7 @@ description: Reference for Anti-Cheat
 ---
 
 Having an Anti-Cheat System is vital to stop cheating and overall negative behavior. In this case we deploy an additional 2 docker containers just for the anti-cheat. The docker-container includes a **fastapi** endpoint to receive information, process it and provide the processed data, furthermore a **socket** endpoint is being used to fetch data in realtime to a client. **mariaDB** is being leveraged to log flag submissions and initiations.  
-![Big Picture](https://winklersblog.net/imgs/anti_cheat_architecture.png)
+![Big Picture](../../../assets/anti-cheat/anti_cheat_architecture.png)
 
 The image above shows the overall workflow of the **Anti-Cheat**. The container-stack itself can be implemented anywhere but because there is no authentication implemented yet, it is recommended to only use it locally and not expose its ports because this may leak sensitive information.
 
