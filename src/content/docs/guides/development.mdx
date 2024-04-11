@@ -28,6 +28,8 @@ This database will then listen on `localhost:5432`, and can be accessed by start
 
 Be aware that the application still needs all the environment variables, which are otherwise provided by the `docker-compose.yaml` file. This can be done on Linux based systems like so:
 
+Some are omitted and options are set, tailored to the fact that this will be used during development only.
+
 ```bash
 INSTANCE_NAME='testCTF' \
 EMAIL_SERVICE='hotmail' \
@@ -39,6 +41,12 @@ DB_USER='root' \
 DB_PASS='CHANGEME' \
 BACKEND_HOST='127.0.0.1' \
 BACKEND_PORT=8080 \
+INFRA_HOST='some.infra.host' \
+INFRA_PORT=8080 \
+INFRA_PSK='CHANGEME' \
+M0N1T0R_ENABLE=0 \
+F1RSTBL00D_ENABLE=0 \
+DISABLE_EMAIL_VERIFY=1 \
 npm run dev
 ```
 
@@ -55,8 +63,20 @@ $env:DB_USER='root'
 $env:DB_PASS="CHANGEME"
 $env:BACKEND_HOST="127.0.0.1" 
 $env:BACKEND_PORT="8080"
+$env:INFRA_HOST='some.infra.host'
+$env:INFRA_PORT=8080
+$env:INFRA_PSK='CHANGEME'
+$env:M0N1T0R_ENABLE=0
+$env:F1RSTBL00D_ENABLE=0
+$env:DISABLE_EMAIL_VERIFY=1
 npm run dev
 ```
+
+:::caution
+Above configuration purposely disables all integrations, except the infrastructure container backend.
+
+If you need to test an integration specifically, refer to the full `docker-compose.yaml` to see how to enable it.
+:::
 
 This will start the Web Application in Astro's development mode. Since we check for this in the Authentication events, you will be able to interact, without actually logging in, since you are currently in a "Dummy Session".
 
@@ -86,7 +106,28 @@ if (!import.meta.env.DEV) {
 This allows you to tinker the platform more easily and adapt it to your needs. It will also automatically assign you the administrator `user_role`.
 
 :::caution
-> **DO UNDER NO CIRRCUMSTANCES USE THE DEVELOPMENT MODE IN PRODUCTION OR ACTUAL CTF SCENARIOS!**
+**DO UNDER NO CIRRCUMSTANCES USE THE DEVELOPMENT MODE IN PRODUCTION OR ACTUAL CTF SCENARIOS!**
+:::
+
+## Developing User Features
+
+The workflow for developing user specific function is to run the app in actual `dist` mode, which means it needs to be rebuilt everytime some changes are made.
+
+This would look similar to the deployment via the `dev` command, only with the extra step of revuilding and substituting with `dist`.
+
+```bash
+# on changes
+npm run build
+# --- output ommited ---
+# then run as dist
+# same env vars
+npm run dist
+```
+
+After the app is running and communicating with the database, you can create a test user and test the platform like a regular user interacting with it.
+
+:::tip
+Be sure to specify `DISABLE_EMAIL_VERIFY=1` as an environment variable when doing this, since it allows you to bypass the email verification process.
 :::
 
 ___

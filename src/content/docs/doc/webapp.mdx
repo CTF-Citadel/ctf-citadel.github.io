@@ -17,7 +17,14 @@ We settled on modern technologies and frameworks to build CTF-Citadel from the g
 -   [Svelte.js](https://svelte.dev/): the _better React_ as we like to call it, compiles to vanilla JavaScript and is extremely efficient, compact and fast.
 -   [TailwindCSS](https://tailwindcss.com/): CSS done right.
 -   [Lucia Auth](https://lucia-auth.com/): a simple and clean Authentication System that is written completely in TypeScript and works wondefully alongside Frameworks like Astro and Svelte.
+-   [DrizzleORM](https://orm.drizzle.team/): making SQL queries fun again.
 -   [Flowbite-Svelte](https://flowbite-svelte.com/): Simple UI Framework for Svelte Components
+
+## Big Picture
+
+To get a general overview of the platform, you may look at the example below.
+
+![Big_Picture](../../../assets/webapp/Big_Picture.svg)
 
 ## Database Integration
 
@@ -133,7 +140,7 @@ All logic related to Lucia can be found under:
 
 Additionally we use the middleware integration that is [documented here](https://lucia-auth.com/guides/validate-session-cookies/astro) which can be found in `src/middleware.ts`.
 
-## Switch to seperate API-Routes
+## Switch to separate API-Routes
 
 At a point in development, where the main `.astro` files became to cluttered in terms of `POST` handler logic, the decision was made to split them.
 This was done mainly for a better overview and seperation of critical logic such as signup and logn, as well as the normal API interaction for general data presentation.
@@ -402,6 +409,18 @@ export const POST: APIRoute = async (context) => {
 ```
 
 Above examples show that the `privilegedWrapper()` simply employs a quick permission check for the user_role attribute that the current session provides via the `user` datastructure. This can normally not be bypassed, as this happens on every pageload server-side and the session is always revalidated.
+
+## Infallible Approach
+
+Every action that is performed by users and sources that can not be fully trusted are designed to be _infallible_, which essentially means that they are treated in a way that will most probably always return something able to be handled by requesters.
+
+In current implementations, the application is designed to _silently fail_, without providing any error or indication to the user.
+
+### Considerations
+
+Silently failing is not an approach that is liked by many, but currently the way in which the platform handles all errors specifically related to frontend interations. This is subject to change and needs a general overhual in the future.
+
+Ideally, every fail should return a proper error that corresponds to it, without revealing sensitive information that could aid the user into gaining an advantage by purposely triggering the error handling system.
 
 ---
 

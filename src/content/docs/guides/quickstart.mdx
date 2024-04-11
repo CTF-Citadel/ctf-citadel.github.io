@@ -6,7 +6,7 @@ Hosting your own CTF can be quite tricky, but we want to change that!
 
 Below you will find all the necessary steps to get your own instance of CTF-Citadel up and running in no time!
 
-## Initial Setup
+## Web-App Initial Setup
 
 We can start off by cloning the main WebApp Repository
 
@@ -33,7 +33,7 @@ openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout server.key -out
 Self-signed certificates are not recommended, you should of course have some valid domain to register officially signed SSL-Certificates.
 Although when deploying the platform locally, inaccessible to the outside world, self-signed Certificates may be sufficient.
 
-## Deploy Using Docker ##
+### Deploy Using Docker
 
 We made hosting your own instance of CTF-Citadel really easy to accoplish using the power of Docker.
 
@@ -59,20 +59,32 @@ The file might look a bit overwhelming at first so here is a walkthrough on what
 - `./nginx/ssl:/etc/ssl/private`: This is the bind mount to your SSL Certificates that NGINX will use to secure your traffic over HTTPS. If you examined the config file you might have noticed that it will always look for `server.crt` and `server.key`. You should either name your certfiles accordingly or modify the paths in the config file mentioned above.
 - `./data/postgres:/var/lib/mysql`: This is where your database stores data, which is user data, challenges, ongoing events and more. Choose this path wisely as it is where your data will reside!
 
-### Environment Variables
+### General Variables
 
 - `EMAIL_NAME`: This is the E-Mail that will be used for Verification and Password Reset E-Mails for Users.
 - `EMAIL_PASS`: Password for the E-Mail Account that you specified above.
 - `EMAIL_SERVICE`: This is the service specifier that will vary depending on what email provider you use. The default is `hotmail`, which works for Microsoft E-Mails.
 - `DB_*`: These are database parameters and should match the ones that you define for the PostgreSQL container itself. We won't got into more detail on each of them as they are pretty self-explanatory
-- `BACKEND_*`: These are backend parameters for the infra component, which should point to the host that your container infra runs on. We won't got into more detail on each of them as they are pretty self-explanatory
+- `INFRA_*`: These are infra parameters for the infra component, which should point to the host that your container infra runs on. We won't got into more detail on each of them as they are pretty self-explanatory
+- `M0N1T0R_*`: Parameters for configurion `m0n1t0r`, the Anti-Cheat component of CTF-Citadel
+- `F1RSTBL00D_*`: Parameters for configurion `f1rstbl00d`, the Discord Firstblood Bot of CTF-Citadel
+
+### Platform Specific Variables
+
+- `INSTANCE_NAME`: Official name of the CTF event or hosters
+- `DATA_FOLDER`: Data folder that the webapp has access to for providing certificate pdf's and flag pools - should match the `docker-compose` or be left default.
+- `SCORING_K`: The K parameter for the dynamic scoring component, higher value mean less aggressive point degradation with more solves and vice-versa.
+- `DISABLE_EMAIL_VERIFY`: Disable the verification process at initial user signup - `0 == false` and `1 == true` 
+- `ENFORCE_EMAIL_DOMAIN`: Specify if the webapp should enforce email domains at signup - `0 == false` and `1 == true`
+- `ENFORCE_DOMAIN`: Specify the email domain that the webapp should enfore - ignored if not enabled.
+- `DISCORD_URL`: URL to the public Discord of the event, will be available through the `/rules` page.
 
 ### Starting the Containers
 
 Once you are happy with your changes, there is only one thing left to do:
 
 ```bash
-docker-compose up -d
+docker-compose --profile full up -d
 ```
 
 This will pull and start all containers and if you go to `https://localhost:443/`, you should see the Login Page show up.
@@ -81,7 +93,26 @@ This will pull and start all containers and if you go to `https://localhost:443/
 Keep in mind that the first user to sign-up on a newly created instance will automatically be assigned the administrator role!
 :::
 
-## Manual Building
+### Understanding Profiles
+
+The `docker-compose.yaml` file in examples is structured and managed using docker profiles. This allows you to omit certain components of the whole Citadel stack, if desired.
+
+There are currently three profiles available.
+
+- `full`: Deploy the stack using all components, including Anti-Cheat, Discord Bot and WebApp
+- `standalone`: Deploy only the WebApp component, excluding Anti-Cheat and Discord Bot
+- `anticheat`: Deploy the WebApp, including only the Anti-Cheat Component
+- `firstblood`: Deploy the WebApp, including only the Discord Bot Component
+
+To start a different profile, just switch the command already shown above, for example to use `standalone` mode you can run the following.
+
+```bash
+docker-compose --profile standalone up -d
+```
+
+By utilizing different profiles, different environment variables will come into effect, so be sure you configured them correctly.
+
+### Manual Building of the WebApp
 
 If you want to test the latest bleeding-edge changes directly from `main` or maybe incorporate some changes of your own, you will need to build a new Docker images locally.
 
@@ -93,7 +124,7 @@ services:
   # ...
   # You can leave the nginx and postgres containers identical
   # ...
-  astro:
+  webapp:
     build:                    # <- changing from image to build
       context: ${PWD}/../     # <- specify our project root
       dockerfile: Dockerfile  # <- name of the Dockerfile to build from
@@ -117,6 +148,80 @@ docker-compose up -d --build
 
 This should build the Astro WebApp directly from source and start the other containers automatically.
 
+## Infra-Backend Initial Setup
+
+Start by copying the `tophack-stack.yml` file from the sample folder in the infra-middleware [repo](https://github.com/CTF-Citadel/infra-middleware/tree/main) to your server.
+
+Then, you can follow these steps to deploy the backend:
+
+### Setup Docker Swarm Production Environment
+
+This setup requires a Linux machine with Docker installed.
+
+#### Initialize Cluster:
+```bash
+docker swarm init --advertise-addr <MANAGER-IP>
+```
+This will return something like:
+```bash
+docker swarm init --advertise-addr 192.168.99.100
+Swarm initialized: current node (dxn1zf6l61qsb1josjja83ngz) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join \
+    --token SWMTKN-1-49nj1cmql0jkz5s954yi3oex3nedyz0fb0xx14ie39trti4wxv-8vxv8rssmk743ojnwacrr2e7c \
+    192.168.99.100:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+```
+
+As the output suggests, you need to run the `docker swarm join --token <TOKEN>` command on each node.
+
+### Setup Traefik in Newly Created Swarm
+
+```bash
+docker network create --driver=overlay --subnet=10.1.0.0/16 traefik-public
+```
+
+```bash
+export NODE_ID=$(docker info -f '{{.Swarm.NodeID}}')
+```
+
+```bash
+docker node update --label-add traefik-public.traefik-public-certificates=true $NODE_ID
+```
+
+```bash
+# Environment variables for the entire CTF Citadel backend, excluding the webapp
+export EMAIL=admin@tophack.org # Email for certbot
+export DOMAIN=traefik.cluster.tophack.org # Domain for Traefik
+export CONTROLLER_DOMAIN=cluster.tophack.org # Domain for controller containers
+export USERNAME=admin # Username for Portainer
+export PASSWORD=super_secret_portainer_password # Password for Portainer
+export HASHED_PASSWORD=$(openssl passwd -apr1 $PASSWORD) # Hashed password for Portainer
+export CF_API_EMAIL=mymail@cloudflare.com # Email of Cloudflare account owning the domain for DNS challenge
+export CF_API_KEY=my-cf-api-key # API key of Cloudflare account owning the domain for DNS challenge
+export GITHUB_USERNAME=ctf-citadel # Username of the GitHub account owning the challenge repository
+export GITHUB_TOKEN=ghp_supersecret # Personal access token of the GitHub account owning the challenge repository
+export DOCKERHUB_USERNAME=dockerhubuser # Username for Dockerhub, used to push images during the event
+export DOCKERHUB_TOKEN=dckr_pat_supersecret # Personal access token for Dockerhub, used to push images during the event
+export PSK=super_secret_key # Pre-shared key to authenticate web-backend
+export CONTROLLER_REPLICACOUNT=1 # Count of replicas for controller container. This also specifies the number of images that can be built simultaneously.
+```
+
+```bash
+docker login -u $GITHUB_USERNAME -p $GITHUB_TOKEN ghcr.io
+```
+
+Login to ghcr.io for the controller image:
+
+```bash
+docker stack deploy -c tophack-stack.yml tophack-stack
+```
+
+This deploys Traefik and the infra-middleware controller to the Swarm cluster with your environment variables.
+
 ___
 
-Authors: Fabian T.
+Authors: Fabian T. & Felix S.
