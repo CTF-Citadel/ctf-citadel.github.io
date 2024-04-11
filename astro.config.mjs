@@ -22,7 +22,7 @@ export default defineConfig({
 					items: [
 						{ label: 'Quick Start', link: '/guides/quickstart' },
 						{ label: 'Development', link: '/guides/development' },
-						{ label: 'Admin-Panel', link: '/guides/adminpanel' },
+						{ label: 'Management', link: '/guides/management' },
 						{ label: 'Challenge Creation', link: '/guides/create-challenges' },
 					],
 				},
@@ -34,9 +34,8 @@ export default defineConfig({
 						{ label: 'Firstblood', link: '/doc/firstblood' },
 						{ label: 'Infrastructure', link: '/doc/infra'},
 						{ label: 'Challenges', link: '/doc/challenges' },
-						{ label: 'Events', link: '/doc/events' },
 						{ label: 'Teams', link: '/doc/teams' },
-						{ label: 'Leaderboard', link: '/doc/leaderboard' },
+						{ label: 'Scoring', link: '/doc/scoring' },
 					],
 				},
 				{
