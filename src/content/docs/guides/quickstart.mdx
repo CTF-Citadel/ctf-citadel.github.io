@@ -148,14 +148,12 @@ docker-compose up -d --build
 
 This should build the Astro WebApp directly from source and start the other containers automatically.
 
-## Infra-Backend Initial Setup
-
+## Infra-Backend Setup
 Start by copying the `tophack-stack.yml` file from the sample folder in the infra-middleware [repo](https://github.com/CTF-Citadel/infra-middleware/tree/main) to your server.
 
 Then, you can follow these steps to deploy the backend:
 
 ### Setup Docker Swarm Production Environment
-
 This setup requires a Linux machine with Docker installed.
 
 #### Initialize Cluster:
@@ -175,10 +173,10 @@ To add a worker to this swarm, run the following command:
 
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
 ```
-
 As the output suggests, you need to run the `docker swarm join --token <TOKEN>` command on each node.
 
-### Setup Traefik in Newly Created Swarm
+
+#### Setup Traefik in Newly Created Swarm
 
 ```bash
 docker network create --driver=overlay --subnet=10.1.0.0/16 traefik-public
@@ -215,11 +213,9 @@ docker login -u $GITHUB_USERNAME -p $GITHUB_TOKEN ghcr.io
 ```
 
 Login to ghcr.io for the controller image:
-
 ```bash
 docker stack deploy -c tophack-stack.yml tophack-stack
 ```
-
 This deploys Traefik and the infra-middleware controller to the Swarm cluster with your environment variables.
 
 ___
