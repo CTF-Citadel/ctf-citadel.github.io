@@ -28,54 +28,28 @@ This database will then listen on `localhost:5432`, and can be accessed by start
 
 Be aware that the application still needs all the environment variables, which are otherwise provided by the `docker-compose.yaml` file. This can be done on Linux based systems like so:
 
-Some are omitted and options are set, tailored to the fact that this will be used during development only.
-
 ```bash
-INSTANCE_NAME='testCTF' \
-EMAIL_SERVICE='hotmail' \
-EMAIL_NAME='some@example.com' \
-EMAIL_PASS='CHANGEME' \
+CONFIG_DIR=./misc/ \
 DB_HOST='127.0.0.1' \
 DB_NAME='citadel' \
 DB_USER='root' \
 DB_PASS='CHANGEME' \
-BACKEND_HOST='127.0.0.1' \
-BACKEND_PORT=8080 \
-INFRA_HOST='some.infra.host' \
-INFRA_PORT=8080 \
-INFRA_PSK='CHANGEME' \
-M0N1T0R_ENABLE=0 \
-F1RSTBL00D_ENABLE=0 \
-DISABLE_EMAIL_VERIFY=1 \
 npm run dev
 ```
 
 Or, if you are developing on a Windows based system like so:
 
 ```powershell
-$env:INSTANCE_NAME="testCTF"
-$env:EMAIL_SERVICE="hotmail"
-$env:EMAIL_NAME='some@example.com' 
-$env:EMAIL_PASS='CHANGEME'
+$env:CONFIG_DIR=.\misc\
 $env:DB_HOST='127.0.0.1'
 $env:DB_NAME='citadel'
 $env:DB_USER='root'
 $env:DB_PASS="CHANGEME"
-$env:BACKEND_HOST="127.0.0.1" 
-$env:BACKEND_PORT="8080"
-$env:INFRA_HOST='some.infra.host'
-$env:INFRA_PORT=8080
-$env:INFRA_PSK='CHANGEME'
-$env:M0N1T0R_ENABLE=0
-$env:F1RSTBL00D_ENABLE=0
-$env:DISABLE_EMAIL_VERIFY=1
 npm run dev
 ```
 
 :::caution
-Above configuration purposely disables all integrations, except the infrastructure container backend.
-
-If you need to test an integration specifically, refer to the full `docker-compose.yaml` to see how to enable it.
+Above configuration uses the default configuration, create a custom `config.yaml` somewhere else to overwrite things you may need.
 :::
 
 This will start the Web Application in Astro's development mode. Since we check for this in the Authentication events, you will be able to interact, without actually logging in, since you are currently in a "Dummy Session".
